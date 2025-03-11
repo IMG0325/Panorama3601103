@@ -3,34 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hiển thị Ảnh 360</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photo-sphere-viewer/4.5.0/photo-sphere-viewer.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/photo-sphere-viewer/4.5.0/photo-sphere-viewer.min.js"></script>
+    <title>Panorama 360</title>
+    <script src="https://cdn.jsdelivr.net/npm/pannellum/build/pannellum.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum/build/pannellum.css">
+    <style>
+        body { margin: 0; }
+        #panorama { width: 100vw; height: 100vh; }
+    </style>
 </head>
 <body>
-    <div id="viewer" style="width: 100%; height: 500px;"></div>
 
-    <script>
-        const panoramaURL = 'https://raw.githubusercontent.com/IMG0325/Panorama3601103/3a44a4fa8795713fb96d11638c588ddb1753adee/panorama.jpg'; // Đã loại bỏ %20
-        
-        fetch(panoramaURL)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Không thể tải ảnh 360. Hãy kiểm tra lại URL hoặc repo.');
-                }
-                return response.blob();
-            })
-            .then(blob => {
-                const viewer = new PhotoSphereViewer.Viewer({
-                    container: document.getElementById('viewer'),
-                    panorama: panoramaURL,
-                    navbar: true
-                });
-            })
-            .catch(error => {
-                document.getElementById('viewer').innerHTML = '<p style="color: red; text-align: center;">Lỗi: ' + error.message + '</p>';
-            });
-    </script>
+<div id="panorama"></div>
+
+<script>
+    pannellum.viewer('panorama', {
+        "type": "equirectangular",
+        "panorama": "panorama.jpg",
+        "autoLoad": true
+    });
+</script>
+
 </body>
 </html>
