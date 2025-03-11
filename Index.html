@@ -3,25 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panorama 360</title>
-    <script src="https://cdn.jsdelivr.net/npm/pannellum/build/pannellum.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum/build/pannellum.css">
-    <style>
-        body { margin: 0; }
-        #panorama { width: 100vw; height: 100vh; }
-    </style>
+    <title>Hiển thị Ảnh 360</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photo-sphere-viewer/4.5.0/photo-sphere-viewer.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/photo-sphere-viewer/4.5.0/photo-sphere-viewer.min.js"></script>
 </head>
 <body>
+    <div id="viewer" style="width: 100%; height: 500px;"></div>
 
-<div id="panorama"></div>
-
-<script>
-    pannellum.viewer('panorama', {
-        "type": "equirectangular",
-        "panorama": "panorama.jpg",
-        "autoLoad": true
-    });
-</script>
-
+    <script>
+        const viewer = new PhotoSphereViewer.Viewer({
+            container: document.getElementById('viewer'),
+            panorama: 'https://raw.githubusercontent.com/IMG0325/Panorama3601103/3a44a4fa8795713fb96d11638c588ddb1753adee/panorama.jpg', // Thay URL ảnh 360 trên GitHub của bạn
+            navbar: true
+        });
+    </script>
 </body>
 </html>
