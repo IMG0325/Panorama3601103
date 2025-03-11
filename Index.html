@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panorama 360</title>
+    <script src="https://cdn.jsdelivr.net/npm/pannellum/build/pannellum.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum/build/pannellum.css">
+    <style>
+        body { margin: 0; }
+        #panorama { width: 100vw; height: 100vh; }
+    </style>
+</head>
+<body>
+
+<div id="panorama"></div>
+
+<script>
+    pannellum.viewer('panorama', {
+        "type": "equirectangular",
+        "panorama": "panorama.jpg",
+        "autoLoad": true
+    });
+</script>
+
+</body>
+</html>

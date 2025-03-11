@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sample Go Vap 360°</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Phần 1: Thiết lập khung hình
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Phần 2: Tải ảnh panorama
+        const texture = new THREE.TextureLoader().load('./panorama.jpg');
+        const geometry = new THREE.SphereGeometry(1000, 60, 40);
+        geometry.scale(-1, 1, 1);
+        const material = new THREE.MeshBasicMaterial({ map: texture });
+        const sphere = new THREE.Mesh(geometry, material);
+        scene.add(sphere);
+
+        // Phần 3: Điều khiển bằng chuột
+        let isDragging = false;
+        let prevX = 0, prevY = 0;
+
+        document.addEventListener('mousedown', e => {
+            isDragging = true;
+            prevX = e.clientX;
+            prevY = e.clientY;
+        });
+
+        document.addEventListener('mousemove', e => {
+            if (!isDragging) return;
+
+            const deltaX = e.clientX - prevX;
+            const deltaY = e.clientY - prevY;
+
+            sphere.rotation.y += deltaX * 0.005;
+            sphere.rotation.x += deltaY * 0.005;
+
+            prevX = e.clientX;
+            prevY = e.clientY;
+        });
+
+        document.addEventListener('mouseup', () => isDragging = false);
+
+        // Phần 4: Zoom bằng lăn chuột
+        document.addEventListener('wheel', (event) => {
+            camera.fov += event.deltaY * 0.05;
+            camera.fov = Math.max(30, Math.min(90, camera.fov)); // Giới hạn zoom
+            camera.updateProjectionMatrix();
+        });
+
+        // Phần 5: Hỗ trợ cảm ứng trên mobile
+        let touchStartX = 0, touchStartY = 0;
+        let touchPrevDistance = 0;
+
+        document.addEventListener('touchstart', (event) => {
+            if (event.touches.length === 1) {
+                touchStartX = event.touches[0].clientX;
+                touchStartY = event.touches[0].clientY;
+            } else if (event.touches.length === 2) {
+                // Xử lý zoom bằng pinch
+                const dx = event.touches[0].clientX - event.touches[1].clientX;
+                const dy = event.touches[0].clientY - event.touches[1].clientY;
+                touchPrevDistance = Math.sqrt(dx * dx + dy * dy);
+            }
+        });
+
+        document.addEventListener('touchmove', (event) => {
+            if (event.touches.length === 1) {
+                const deltaX = event.touches[0].clientX - touchStartX;
+                const deltaY = event.touches[0].clientY - touchStartY;
+
+                sphere.rotation.y += deltaX * 0.005;
+                sphere.rotation.x += deltaY * 0.005;
+
+                touchStartX = event.touches[0].clientX;
+                touchStartY = event.touches[0].clientY;
+            } else if (event.touches.length === 2) {
+                // Xử lý zoom bằng pinch
+                const dx = event.touches[0].clientX - event.touches[1].clientX;
+                const dy = event.touches[0].clientY - event.touches[1].clientY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                const zoomFactor = (touchPrevDistance - distance) * 0.1;
+                camera.fov += zoomFactor;
+                camera.fov = Math.max(30, Math.min(90, camera.fov));
+                camera.updateProjectionMatrix();
+
+                touchPrevDistance = distance;
+            }
+            event.preventDefault();
+        });
+
+        // Phần 6: Khởi chạy
+        camera.position.z = 0.1;
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+</html>
